@@ -5,7 +5,7 @@ date: 2017-11-26
 categories: writeups
 ---
 
-Quando entramos na Challenge conseguimos ver que acontece um redirect repentino que tem um ciclo. Além disso, junto ao redirect, na source do html conseguimos ver que existe uma tag `<p>` que está como hidden, para não conseguirmos ver ela superficialmente, então, resolvi criar um script em Python para capturar todas as páginas de redirect e todos os conteúdos dentro da tag `<p>`.
+Quando entramos na Challenge conseguimos ver que acontece um redirect repentino que tem um ciclo. Além disso, junto ao redirect, na source do html conseguimos ver que existe uma tag p que está como hidden, para não conseguirmos ver ela superficialmente, então, resolvi criar um script em Python para capturar todas as páginas de redirect e todos os conteúdos dentro da tag p.
 {% highlight python %}
 import requests
 string = ""
@@ -18,7 +18,7 @@ while True:
 	print flag
 {% endhighlight %}
 
-Depois disso, ao executar, foi possível ver que o conteúdo que estava dentro da tag `<p>` era a flag fora do padrão normal...
+Depois disso, ao executar, foi possível ver que o conteúdo que estava dentro da tag p era a flag fora do padrão normal...
 {% highlight bash %}
 % python web.py                                                        !1302
 R
