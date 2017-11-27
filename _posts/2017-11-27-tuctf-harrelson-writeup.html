@@ -14,7 +14,7 @@ cat index.txt #
 Como o cookie está fazendo um "cat" em index.txt, podemos tentar executar comandos via cookie, porém, ao tentar apenas mudar o cookie, ele nos retorna o mesmo cookie porém com o nosso cookie novo concatenado.
 Para bypassar isso e conseguir a flag, tive que usar uma quebra de linha para o comentário não pegar o meu comando...
 
-{% highlight basg %}
+{% highlight bash %}
 echo "
 cat /etc/passwd" | base64
 CmNhdCAvZXRjL3Bhc3N3ZAo=
