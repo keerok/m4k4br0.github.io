@@ -2,8 +2,9 @@
 
 name: Chalk
 paginate: 25
-url: https://m4k4br0.github.io/
+url: ''
 blog_theme: dark
+baseurl: ''
 
 # Optional settings
 
