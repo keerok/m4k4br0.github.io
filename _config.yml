@@ -5,6 +5,7 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'jekyll serve'. If you change this file, please restart the server process.
 
+<<<<<<< HEAD
 # Site settings
 title: Gravity
 email: hemangsk@gmail.com
@@ -15,6 +16,13 @@ twitter_username: hemang_kumar
 github_username:  hemangsk
 paginate: 5
 theme-dark: false #Set to true to change to dark website theme
+=======
+name: Chalk
+paginate: 25
+url: ''
+blog_theme: dark
+baseurl: ''
+>>>>>>> de52e8336ba54a7f2919d28cefbf6ba6a430552f
 
 gems: [jekyll-paginate, kramdown]
 # Build settings
