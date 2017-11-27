@@ -2,8 +2,8 @@
 
 name: Chalk
 paginate: 25
-url: # add your site url (format: https://example.com/)
-blog_theme: light # Or use dark
+url: https://m4k4br0.github.io/
+blog_theme: dark
 
 # Optional settings
 
