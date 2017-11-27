@@ -5,13 +5,13 @@ date: 2017-11-26
 categories: writeups
 ---
 
-Ao entrar na Challange conseguimos ver que temos uma pagina html simples, navegando por ela não conseguimos encontrar nada de importante, porém, como o próprio desafio nos introduz, é uma challange de git, então, podemos tentar procurar pelo git na url. O mais comum de acontecer em alguns casos é que o git fique na url base como “.git”(como é nesse caso).
+Ao entrar na Challange conseguimos ver que temos uma página html simples, navegando por ela não conseguimos encontrar nada de importante, porém, como o próprio desafio nos introduz, é uma challange de git, então, podemos tentar procurar pelo git na url. O mais comum de acontecer em alguns casos é que o git fique na url base como “.git”(como é nesse caso). 
 <br>
 <a href="https://imgur.com/XItaAFa"><img src="https://i.imgur.com/XItaAFa.png" title="source: imgur.com" /></a>
 <br>
-inicialmente eu tentei entrar nas pastas para ver se a flag nao estaria em algum lugar um pouco mais especifico, porém, não…
+inicialmente eu tentei entrar nas pastas para ver se a flag não estaria em algum lugar um pouco mais específico, porém, não…
 <br>
-Acabei baixando o diretório .git inteiro para começar a trabalhar em cima disso:
+Depois disso, entrei em “logs/refs” e comecei usar algumas features do git para ler os arquivos e buscar por seus parentes.. 
 
 {% highlight bash %}
 wget --mirror -I .git http://gitgud.tuctf.com/.git/
