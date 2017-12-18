@@ -1,0 +1,24 @@
+---
+title: "3DSCTF – Web Baby Geniuses - 453 Points"
+layout: post
+date: 2017-12-18
+categories: writeups
+---
+
+<a href="https://imgur.com/a/oyeN4"><img src="https://imgur.com/a/oyeN4.png" title="source: imgur.com"></a>
+Essa chall parecia ser algo em cima de bypass de autenticação, porém, o formulário apresentado não tinha nenhuma lógica por trás.
+
+Ao executar um brute force de diretórios consegui encontrar um diretório {% highlight bash %}.git{% endhighlight %}.
+<br>
+{% highlight bash %}
+dirb http://baby01.3dsctf.org:8004/
+{% endhighlight %}
+<br>
+porém não havia index of e eu só podia baixar os arquivos, minha primeira tentativa ficou em cima do {% highlight bash %}.git/HEAD{% endhighlight %}, onde me dizia que eu poderia ir para {% highlight bash %}/refs/heads/master{% endhighlight %}, depois de eu baixar a maioria dos arquivos, vi que não existia uma lógica de programação por trás e sim, apenas o {% highlight bash %}.git{% endhighlight %}.
+
+Baixei o arquivo config para ver se havia um github nesse {% highlight bash %}.git{% endhighlight %}, e havia!
+
+Ao entrar no github conseguimos ver a flag na timeline dos repositórios do usuário...
+<a href="https://imgur.com/a/1oVjM"><img src="https://imgur.com/a/1oVjM.png" title="source: imgur.com"></a>
+
+
