@@ -5,9 +5,9 @@ date: 2018-01-16
 ---
 
 A SugarCRM permite que as empresas criem relacionamentos de proximidade com clientes, com a solução mais adaptável e econômica do mercado para gestão de relacionamento com o cliente (CRM, na sigla em inglês).
-
+<br>
 XSS SugarCRM 3.5.1
-
+<br>
 Quando paramos para analisar o seguinte trecho de código, conseguimos ver que a primeira key é o "print".
 
 {% highlight php %}
@@ -34,9 +34,9 @@ phprint.php
 {% endhighlight %}
 
 a url está sendo jogada inteiramente, então, só nos resta ir no único lugar que não foi encodado, que é na key em si:
-
+<br>
 <code>print=a&"/><xss>alert(1)</xss></code>
-
+<br>
 A index do sugarCRM 3.5.1 faz um include do phprint.php, então, esse xss pode ser aplicado em dois lugares, na index.php ou em phprint.php.
 
 {% highlight php %}
