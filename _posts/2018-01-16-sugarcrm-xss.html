@@ -30,7 +30,7 @@ phprint.php
 
 <code>"{$key}=" . urlencode($val) . "&";</code>, ok , o valor da key está sendo encodado, e no print que temos:
 {% highlight php %}
- 60 <a href="<?php echo $url; ?>"><< <?php echo $app_strings['LBL_BACK']; ?></a><br><br>
+ 60 <a href="<?php echo $url; ?>"><?php echo $app_strings['LBL_BACK']; ?></a><br><br>
 {% endhighlight %}
 
 a url está sendo jogada inteiramente, então, só nos resta ir no único lugar que não foi encodado, que é na key em si:
