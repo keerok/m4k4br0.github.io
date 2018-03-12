@@ -1,0 +1,128 @@
+---
+title: "N1CTF - funning eating cms Writeup"
+layout: post
+date: 2018-03-12
+categories: writeups
+---
+
+N1CTF writeup
+
+<code>"a strange online reservation system for restaurants,please hacking it"</code>
+<p>Essa challenge nós dizia pouca coisa, apenas dizia que era para hackear o site de um restaurante.</p>
+<br>
+Ao entrar ir para o link, ele nos entregava a seguinte pagina:
+<br>
+<blockquote class="imgur-embed-pub" lang="en" data-id="XCMO2qh"><a href="//imgur.com/XCMO2qh">View post on imgur.com</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+<br>
+<p>fazendo o login somos redirecionados para outra pagina:</p>
+<br>
+0x2.png
+<br>
+0x3.png
+<br>
+<br>
+<p>Aqui conseguimos ver aquilo que seria a primeira vulnerabilidade encontrada, um LFI no <code>user.php?page=</code>.</p>
+<br>
+0x4.png
+<br>
+0x5.png
+<br>
+<br>
+<p>Ok, o arquivo <code>guest</code> não nos deu muitas informações, então, fui atrás de outros arquivos:</p>
+<br>
+0x6.png
+<br>
+userPHP.png
+<br>
+<br>
+<p>Agora sim, a partir desse código, ja conseguimos ir para outros arquivos que não estavam a nossa vista...</p>
+<br>
+0x7.png
+<br>
+<br>
+<p>Neste arquivo <code>function.php</code>, é bom destacar algumas coisas que estão sendo feitas:</p>
+<p>temos dois tipos de filtros bloqueando algumas palavras, como <code>manage</code>, <code>flag</code> e <code>ffffllllaaaaggg</code>, logo não conseguimos acessar esses arquivos pelo lfi casual.</p>
+
+<p>Fazendo pequenos testes para ver se conseguimos algo, tivemos uma boa resposta no arquivo <code>info</code>:</p>
+<br>
+ffflag.png
+<br>
+<br>
+<p>Achamos um hint do qual ja sabemos que existe...</p>
+<br>
+<br>
+<p>Bem, já conseguimos tudo aquilo que queriamos, agora, precisamos avançar na procura e achar um bypass para acessar arquivos que não foram bloqueados em um primeiro momento.</p>
+<p>O filtro da url está sendo feito com o auxilio da função <code>parse_url</code> e <code>parse_str</code>, porém, esta função tem uma fraqueza, quando adicionamos barras a mais("/") na url, conseguimos fazer com que a função não faça o parsing correto e, portanto, não lê a url inteira:
+<br>
+firstBypass.png
+<br>
+decode.png
+<br>
+<br>
+<p>Encotramos mais um arquivo que não estava em nossa vista, buscando ele no lfi e vendo seu conteudo, vemos que ele está fazendo o <code>include</code> de um template. Logo, isso quer dizer que o arquivo é algo manipulavel pelo usuario...</p>
+<br>
+m4annge.png
+<br>
+decode2.png
+<br>
+<br>
+<p>Entrando na página, temos um formulário para enviar arquivos.</p>
+<br>
+upload.png
+<br>
+<br>
+<p>Verificando o código que já haviamos obtido, não vi nenhuma entrada para arquivos, então, abri a source e encontrei o arquivo <code>upllloadddd.php</code>.</p>
+<br>
+uploadddd.png
+<br>
+uploaddddddd.png
+<br>
+<br>
+<p>Fazendo uma pequena análise em cima do código, conseguiamos destacar duas coisas para o bypass:</p>
+<br>
+<code>1.</code>
+AnalystCode1.png
+<br>
+<p>Ele está usando a função <code>system</code> com uma concatenação sem filtros, isso nós da a possibilidade de uma RCE.</p>
+<br>
+<code>2.</code>
+AnalystCode2.png
+<br>
+<p>Ele está verificando a extensão do nosso arquivo, logo, precisamos de uma forma de enviar uma extensçao.</p>
+<br>
+<p>A forma mais fácil que eu pensei bypassar, foi usando um comentario <code>#</code> e passando a extensão logo em seguida:</p>
+<br>
+shell01.png
+<br>
+<br>
+<p>Após algumas tentativas procurando em todos esses arquivos listados, pensei que talvez a flag estivesse no banco de dados, então, fui atrás do conteúdo do arquivo <code>config.php</code>.</p>
+<br>
+config.php.png
+<br>
+<br>
+<p>Usei as credenciais do <code>mysql</code> do arquivo <code>config.php</code> para logar no <code>mysql</code> e dumpar o conteúdo do banco de dados...</p>
+<br>
+shell02.png
+<br>
+shell03.png
+<br>
+shell04.png
+<br>
+<br>
+<p>Encontrei muitos users e nada de flag, então, pensei no óbvio, procurar a flag no sistema.</p>
+<br>
+findFlag.png
+<br>
+<p>encontramos a flag <code>:)</code>.</p>
+<br>
+<br>
+shit.png
+<br>
+<br>
+<p>Então, me deparei que não podiamos usar "/"... :P</p>
+<p>Mas não importa, podemos usar o cd...</p>
+<br>
+ffffag.png
+<br>
+
+
