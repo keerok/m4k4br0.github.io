@@ -66,73 +66,60 @@ Ao entrar ir para o link, ele nos entregava a seguinte pagina:
 <p>Entrando na página, temos um formulário para enviar arquivos.</p>
 <br>
 <img src="https://i.imgur.com/lfox2Mj.png">
-upload.png
 <br>
 <br>
 <p>Verificando o código que já haviamos obtido, não vi nenhuma entrada para arquivos, então, abri a source e encontrei o arquivo <code>upllloadddd.php</code>.</p>
 <br>
 <img src="https://i.imgur.com/lE8pfyq.png">
-uploadddd.png
 <br>
 <img src="https://i.imgur.com/RlHkPa1.png">
-uploaddddddd.png
 <br>
 <br>
 <p>Fazendo uma pequena análise em cima do código, conseguiamos destacar duas coisas para o bypass:</p>
 <br>
 <code>1.</code>
 <img src="https://i.imgur.com/tiQXrDS.png">
-AnalystCode1.png
 <br>
 <p>Ele está usando a função <code>system</code> com uma concatenação sem filtros, isso nós da a possibilidade de uma RCE.</p>
 <br>
 <code>2.</code>
 <img src="https://i.imgur.com/T8jFoAS.png">
-AnalystCode2.png
 <br>
-<p>Ele está verificando a extensão do nosso arquivo, logo, precisamos de uma forma de enviar uma extensçao.</p>
+<p>Ele está verificando a extensão do nosso arquivo, logo, precisamos de uma forma de enviar uma extensão.</p>
 <br>
 <p>A forma mais fácil que eu pensei bypassar, foi usando um comentario <code>#</code> e passando a extensão logo em seguida:</p>
 <br>
 <img src="https://i.imgur.com/HEbjEFh.png">
-shell01.png
 <br>
 <br>
 <p>Após algumas tentativas procurando em todos esses arquivos listados, pensei que talvez a flag estivesse no banco de dados, então, fui atrás do conteúdo do arquivo <code>config.php</code>.</p>
 <br>
 <img src="https://i.imgur.com/FUEuFx0.png">
-config.png
 <br>
 <br>
 <p>Usei as credenciais do <code>mysql</code> do arquivo <code>config.php</code> para logar no <code>mysql</code> e dumpar o conteúdo do banco de dados...</p>
 <br>
 <img src="https://i.imgur.com/VkrNWR2.png">
-shell02.png
 <br>
 <img src="https://i.imgur.com/iamu3VI.png">
-shell03.png
 <br>
 <img src="https://i.imgur.com/Cle27NS.png">
-shell04.png
 <br>
 <br>
 <p>Encontrei muitos users e nada de flag, então, pensei no óbvio, procurar a flag no sistema.</p>
 <br>
 <img src="https://i.imgur.com/0d5gqMe.png">
-findFlag.png
 <br>
 <p>encontramos a flag <code>:)</code>.</p>
 <br>
 <br>
 <img src="https://i.imgur.com/SDNbsVQ.png">
-shit.png
 <br>
 <br>
 <p>Então, me deparei que não podiamos usar "/"... :P</p>
 <p>Mas não importa, podemos usar o cd...</p>
 <br>
 <img src="https://i.imgur.com/kMJE9yo.png">
-ffffag.png
 <br>
 
 
