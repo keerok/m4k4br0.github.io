@@ -21,24 +21,24 @@ http://search-box.web1.sunshinectf.org"</code>
 <br>
 Dentro da página tinhas um pequeno input para enviarmos uma request para um site que seria algum "qualquer".
 <br>
-<img src="200points0x1.png">
+<img src="https://i.imgur.com/vltSBlC.png">
 <br>
-<img src="200points0x2.png">
+<img src="https://i.imgur.com/wpr4QMb.png">
 <br>
 <br>
 Porém, com alguns pequenos testes acabei percebendo que ele estava apenas aceitando o <code>host</code> como sendo 'www.google.com'.
 Lógicamente uma das primeiras coisas que me veio na cabeça seria tentar acessar algum arquivo via <code>file://</code>, porem, sem sucesso.
 <br>
-<img src="200points0x3.png">
+<img src="https://i.imgur.com/ImCQbcQ.png">
 <br>
 <br>
 no momento que eu comecei a pensar que o <code>file://</code> não teria serventia, pensei em fazer o seguinte, juntar o wrapper mais o domínio que havia funcionado:
 <br>
-<img src="200points0x4.png">
+<img src="https://i.imgur.com/gpuZAAn.png">
 <br>
 <code>"get source failed"</code>, oops, então quer dizer que o wrapper na verdade funciona, o que não está dando certo é a procura pelo www.google.com nos diretorios, ou seja, aqui temos um filtro de host, e para confirmar isso:
 <br>
-<img src="extra.png">
+<img src="https://i.imgur.com/MnYZ7CY.png">
 <br>
 <br>
 Está sendo usado o <code>parse_url()</code> do php, se fizermos alguns pequenos testes, podemos tirar nossas conclusões:
@@ -72,18 +72,19 @@ array(3) {
 {% endhighlight %}
 <br>
 Neste output acima, estamos passando o 127.0.0.1 como user, porem, o curl nao vai encontrar um user de autenticação igual a <code>127.0.0.1</code>, a url será interpretada corretamente:
-
-<img src="200points0x6.png">
-
+<br>
+<img src="https://i.imgur.com/Q3N9nUN.png">
+<br>
 Podemos tirar nossas conclusões que, se ele retornou "Source Code", ou estamos em <code>127.0.0.1</code> e o nosso bypass funcionou, ou estamos em <code>www.google.com</code>.
 Para saber isso, podemos tentar pegar algum arquivo interno, como o index.php que existe no webroot.
-
-<img src="200points0x7.png">
-
-Eee, não funcionou. 
-
+<br>
+<img src="https://i.imgur.com/mPBmx5f.png">
+<br>
+Eee... não funcionou. 
+<br>
+<br>
 Fazendo algumas rápidas pesquisas e alguns testes, identifiquei um outro bypass, onde passamos um <code>user@127.0.0.1</code> como usuário mais uma porta de destino,www.google.com continua sendo o host, porem a interpretação do curl acaba desvalorizando isso. Então, o <code>parse_url()</code> praticamente não tem uma serventia de segurança neste código:
-
+<br>
 {% highlight bash %}
 php > $url = "http://user@127.0.0.1:80@www.google.com/index.php";
 php > var_dump(parse_url($url));
@@ -126,13 +127,13 @@ TEST SSRF
 <br>
 então fui para a aplicação:
 <br>
-<img src="200points0x9.png">
+<img src="https://i.imgur.com/PZmUHgj.png">
 <br>
-<img src="200points0x10.png">
+<img src="https://i.imgur.com/nYUEobv.png">
 <br>
 Porém a challenge nos dizia que era necessário pegar a flag em <code>/etc/flag.txt</code>, mas não havia como eu usar o <code>file://</code> pois nenhum arquivo estava sendo lido, me pareceu estranho isso.
 <br>
-<img src="200points0x11.png">
+<img src="https://i.imgur.com/xJWLbbN.png">
 <br>
 <br>
 notei que ao final de cada arquivo passado, estava sendo concatenada à request uma <code>/</code>, resolvi testar isso direto pelo curl e comparar os resultados:
@@ -165,13 +166,13 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin
 <br>
 Mas a aplicação(usando o burp), não aceitou:
 <br>
-<img src="200points0x12.png">
+<img src="https://i.imgur.com/sn6lkYR.png">
 <br>
 Então fiz o simples, o encode de <code>#</code> para ser igual a <code>%23</code>, e funcionou!
 <br>
-<img src="200points0x13.png">
+<img src="https://i.imgur.com/W6BsOji.png">
 <br>
-<img src="200points0x14.png">
+<img src="https://i.imgur.com/BvHy36g.png">
 <br>
 <code>Flag: sun{R3quE5t_tyP3S_m4tT3r}</code>
 <br>
