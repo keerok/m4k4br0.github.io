@@ -71,18 +71,18 @@ array(3) {
 }
 {% endhighlight %}
 <br>
-Neste output acima, estamos passando o 127.0.0.1 como user, porem, o curl nao vai encontrar um user de autenticação igual a 127.0.0.1, a url será interpretada corretamente:
+Neste output acima, estamos passando o 127.0.0.1 como user, porem, o curl nao vai encontrar um user de autenticação igual a <code>127.0.0.1</code>, a url será interpretada corretamente:
 
 <img src="200points0x6.png">
 
-Podemos tirar nossas conclusões que, se ele retornou "Source Code", ou estamos em 127.0.0.1 e o nosso bypass funcionou, ou estamos em www.google.com.
+Podemos tirar nossas conclusões que, se ele retornou "Source Code", ou estamos em <code>127.0.0.1</code> e o nosso bypass funcionou, ou estamos em <code>www.google.com</code>.
 Para saber isso, podemos tentar pegar algum arquivo interno, como o index.php que existe no webroot.
 
 <img src="200points0x7.png">
 
 Eee, não funcionou. 
 
-Fazendo algumas rápidas pesquisas e alguns testes, identifiquei um outro bypass, onde passamos um user@127.0.0.1 como usuário mais uma porta de destino,www.google.com continua sendo o host, porem a interpretação do curl acaba desvalorizando isso. Então, o parse_url() praticamente não tem uma serventia de segurança neste código:
+Fazendo algumas rápidas pesquisas e alguns testes, identifiquei um outro bypass, onde passamos um <code>user@127.0.0.1</code> como usuário mais uma porta de destino,www.google.com continua sendo o host, porem a interpretação do curl acaba desvalorizando isso. Então, o <code>parse_url()</code> praticamente não tem uma serventia de segurança neste código:
 
 {% highlight bash %}
 php > $url = "http://user@127.0.0.1:80@www.google.com/index.php";
