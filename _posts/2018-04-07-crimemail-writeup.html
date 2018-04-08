@@ -1,0 +1,22 @@
+---
+title: "INS'HACK - Crimemail Writeup"
+layout: post
+date: 2018-04-07
+categories: writeups
+---
+
+"service, to communicate with his associates.
+<br>
+Let's see if you can hack your way in his account...
+<br>
+Hint: his password's md5 is computed as followed: <code>md5 = md5($password + $salt)</code> and Collins Hackle has a password which can be found in an english dictionary"
+<br>
+
+Entrando no site temos um formulario de login simples, lógico que sempre fazemos alguns testes padrões ao vermos formularios de login...
+<br>
+<img src="">
+Depois de uma ou duas tentativas resolvi entrar no link de "Lost password?", então tinhamos outro fomulario, um formulario muito parecido com os que temos quando realmente entramos em links parecidos...
+<br>
+Fazendo poucos testes aqui conseguimos printar um erro na nossa tela:
+<br>
+<img src="">
