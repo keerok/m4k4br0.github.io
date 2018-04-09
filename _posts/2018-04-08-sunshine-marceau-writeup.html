@@ -1,0 +1,33 @@
+---
+title: "SunshineCtf - Marceau Writeup"
+---
+<code>
+"Marceau
+<br>
+Hey my friend tells me that the flag is in this site's source code. Idk how to read that though, lol (🅱️retty lame tbh 😂)
+<br>
+http://marceau.web1.sunshinectf.org
+<br>
+Author: charlton
+<br>
+Hint 2018-04-06 00:20 UTC: There are many different types of MIMEs, but only a handful were truly legendary..."
+</code>
+
+A página que nós é dada, apenas nos diz que estamos supostamente não aceitando algo...
+<br>
+Pela lógica, ele está se referindo ao campo <code>Accept</code> do header <code>HTTP</code>.
+<br>
+Eu fiz uma pequena lista com alguns mimetypes referentes ao <code>PHP</code>, e tentei coloca-los no <code>Accept</code>
+<br>
+<img src="">
+<br>
+<img src="">
+<br>
+<img src="">
+Até que funcionou :).
+
+O campo <code>Accept</code> ficou da seguinte forma:
+<br>
+<code>Accept: text/html,application/xhtml+xml,application/xml,application/x-php,text/php;q=0.9,*/*;q=0.8</code>
+<br>
+<code>flag: sun{45k_4nd_y3_5h411_r3c31v3}</code>
