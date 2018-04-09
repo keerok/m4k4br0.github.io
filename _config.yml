@@ -11,10 +11,10 @@ basecss:
 title: m4k4br0
 description:  Pentester and CTF Player at FireShell Security Team ;)
 # Contact and social media links
-twitter_username: @k33r0k
+twitter_username: k33r0k
 github_username: m4k4br0
 facebook_username: teste
-instagram_username: @ker0
+instagram_username: 
 linkedin_username: 
 
 exclude: ['node_modules', 'gulpfile.js', 'package.json']
