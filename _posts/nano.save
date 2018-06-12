@@ -1,4 +1,0 @@
-system('pahtomjs ~/xss.js');
-sleep(1);
-if($_SESSION['atual'] == )
-unlink('/var/lib/php5/'.$file);
