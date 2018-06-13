@@ -5,9 +5,9 @@ date: 2018-06-11
 categories: vulnerabilities
 ---
 
-<p>	A vulnerabilidade foi encontrada de uma forma um pouco inusitada. A alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que na seguinte eu tinha o nome do usuário na seguinte url(<code>index.php/home/requested_user/Sent%20interest/corp</code>) e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url.</p> 
+<p>	A vulnerabilidade foi encontrada de uma forma um pouco inusitada. A alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que eu tinha o nome do usuário na seguinte url(<code>index.php/home/requested_user/Sent%20interest/corp</code>) e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url.</p>
 <br>
-	<p>O teste inicial foi logicamente foi adicionar uma aspas simples e ver o que iria me retornar:</p>
+	<p>O teste inicial logicamente foi adicionar uma aspas simples e ver o que iria me retornar:</p>
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'or%20a%23</code>
 <center>
@@ -23,7 +23,7 @@ categories: vulnerabilities
 <img src="https://i.imgur.com/4LUyOHe.png">
 </center>
 <br>
-	<p>Até este ponto estava tudo bem, porém notei uma limitação ao tentar dumpar a db no modo clássico, até mesmo usando blind. Me pareceu estranho não conseguir resposta para algumas querys, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection.</p> 
+	<p>Até este ponto estava tudo bem, porém notei uma limitação ao tentar dumpar a db no modo clássico, até mesmo usando blind. Me pareceu estranho não conseguir resposta para algumas querys, porém, entendi que eu estava limitado, fazendo algumas pesquisas vi que a maneira seria fazer o dump usando error based com XPATH Injection.</p>
 <br>
 <code>url:http://[HOST]/index.php/home/requested_user/Sent%20interest/1'%20or%20extractvalue(1,user())%20%23</code>
 <center>
@@ -47,13 +47,13 @@ categories: vulnerabilities
 <br>
 	<p>Bom, a partir deste ponto, a melhor forma seria criar um script para fazer o dump!</p>
 <br>
-	<p>Depois disso, eu ainda assim fiquei curioso para saber como que o componente estava capturando esta parte da url, então baixei o código dele e vasculhei até encontrar o seguinte trecho:</p> 
+	<p>Depois disso, eu ainda assim fiquei curioso para saber como que o componente estava capturando esta parte da url, então baixei o código dele e vasculhei até encontrar o seguinte trecho:</p>
 <br>
 <code>router.php</code>
 <br>
 {% highlight php %}
 238 - if(!empty($segments[2]) && $segments[0]=='requested_user') {
-239 - 	$c_id	= EkrishtaUsrID($segments[2]); 
+239 - 	$c_id	= EkrishtaUsrID($segments[2]);
 240 - 	if($segments[1] == "Sent interest")
 241 -	  $vars['rid'] = $c_id;
 242 -	else
@@ -61,7 +61,7 @@ categories: vulnerabilities
 244 - }
 {% endhighlight %}
 
-	<p>Fazendo uma analise rápida, sabemos que o <code>$c_id</code> esta capturando o segmento que está o nosso nome de usuário e adicionando ele a um array (<code>$vars</code>), podemos basicamente adivinhar que a função <code>EkrishtaUsrID()</code> está buscando o nosso id ou o nome do usuário no banco de dados, mas vamos ver o que realmente ela está fazendo.</p> 
+	<p>Fazendo uma analise rápida, sabemos que o <code>$c_id</code> esta capturando o segmento que está o nosso nome de usuário e adicionando ele a um array (<code>$vars</code>), podemos basicamente adivinhar que a função <code>EkrishtaUsrID()</code> está buscando o nosso id ou o nome do usuário no banco de dados, mas vamos ver o que realmente ela está fazendo.</p>
 <br>
 <br>
 	<p>Fazendo uma procura pela função <code>EkrishtaUsrID()</code>, encontrei ela presente no mesmo arquivo e é possível ver que que existe uma falta de sanitização nas linhas <code>295</code> e <code>305</code>.</p>
@@ -73,17 +73,17 @@ categories: vulnerabilities
 295 -	 $sql = "SELECT `username` FROM #__users WHERE `id`='". $uid."'";
 296 -	 $db->setQuery($sql);
 297 - 	 return $db->loadResult();
-298 -	
+298 -
 299 - }
-300 - 
+300 -
 301 - function EkrishtaUsrID($uid_name)
 302 - {
-303 - 
+303 -
 304 - 	 $db = JFactory::getDBO();
 305 -	 $sql = "SELECT `id` FROM #__users WHERE `username`= '" .$uid_name."'";
 306 -	 $db->setQuery($sql);
 307 -	 return $db->loadResult();
-308 -      
+308 -
 309 - }
 {% endhighlight %}
 
