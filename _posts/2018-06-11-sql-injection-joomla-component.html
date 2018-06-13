@@ -5,7 +5,7 @@ date: 2018-06-11
 categories: vulnerabilities
 ---
 
-<p>	A vulnerabilidade foi encontrada de uma forma um pouco inusitada. A alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que na seguinte aba eu tinha o nome do usuário na url e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url.</p> 
+<p>	A vulnerabilidade foi encontrada de uma forma um pouco inusitada. A alguns dias o Daybson estava subindo um laboratório de teste novo, para  o curso de Pentest Profissional da Desec Security, quando me chamou para testa-lo, eu em particular não sabia que vulnerabilidade havia no laboratório, apenas loguei e fui testar. Notei que na seguinte eu tinha o nome do usuário na seguinte url(<code>index.php/home/requested_user/Sent%20interest/corp</code>) e me pareceu um pouco estranho, talvez fosse gerado um novo arquivo durante o registro ou algo assim, mas na verdade notei que aquilo não era um arquivo, era realmente um parâmetro da url.</p> 
 <br>
 	<p>O teste inicial foi logicamente foi adicionar uma aspas simples e ver o que iria me retornar:</p>
 <br>
