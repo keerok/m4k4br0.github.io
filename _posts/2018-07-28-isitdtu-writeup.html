@@ -10,7 +10,7 @@ category: writeup
 <br>
 <img src="https://i.imgur.com/BKL98LX.png">
 
-<p>Bem, entrando na challenge não tinhamos muita coisa para fazer, haviamos um input e um botão, basicamente indicando que tinhamos um curl sendo executado, a primeira coisa que tentei, foi tentar enviar algo para o google.com e ver se retornava algum valor:</p>
+<p>Bem, entrando na challenge não tínhamos muita coisa para fazer, haviamos um input e um botão, basicamente indicando que tínhamos um curl sendo executado, a primeira coisa que tentei, foi tentar enviar algo para o google.com e ver se retornava algum valor:</p>
 <img src="https://i.imgur.com/x44sNn7.png">
 <img src="https://i.imgur.com/6qpAlUX.png">
 <p>Bem, parece que só podemos enviar coisas para o localhost, então, indo um pouco a fundo, podemos achar um pequeno bypass para isso, já que a aplicação não está barrando wrappers, temos a possibilidade de utilizar o file:// aqui:</p>
@@ -91,15 +91,15 @@ function getUrlContent($url){
 initdb($conn);
 ?>
 {% endhighlight %}
-<p>É sempre interessante quando temos usuarios,senhas e etc presentes no código, vamos guardar, pois pode nos ser util futuramente.</p>
-<p>Analisando p initdb() você consegue ver que a função está criando um tabela chamada flag com uma coluna secret no banco de dados, caso ela ainda não exista...</p>
+<p>É sempre interessante quando temos usuarios,senhas e etc presentes no código, vamos guardar, pois pode nos ser utíl futuramente.</p>
+<p>Analisando o initdb() você consegue ver que a função está criando uma tabela chamada flag com uma coluna secret no banco de dados, caso ela ainda não exista...</p>
 
 <br>
 <p>A função safe() está pegando a url passada e verificando via parse_url() se o host bate com localhost ou 127.0.0.1, nenhuma verificação pesada aqui...</p>
-<p>Bem, aqui no getUrlContent() eu confesso que cheguei a pensar que havia uma forma talvez nova de bypassar o escapeshellarg e conseguir injetar comandos, porém, não faria sentido algum isso, mas eu pensei nessa possibilidade…</p>
-<p>Olhando para a função conseguimos ver que ela está usando o escapeshellarg para criar um escape nos argumentos do comando, logo abaixo é executado um shell_exec e retornado para o usuário.</p>
+<p>Bem, aqui no getUrlContent() eu confesso que cheguei a pensar que havia, talvez, uma nova de bypassar o escapeshellarg e conseguir injetar comandos, porém, não faria sentido algum isso, mas eu pensei nessa possibilidade e perdi muito tempo com isso…</p>
+<p>Olhando para a função, conseguimos ver que ela está usando o escapeshellarg para criar um escape nos argumentos do comando, logo abaixo é executado um shell_exec e retornado para o usuário.</p>
 
-<p>Ok, pensando nas possibilidades, ficou muito claro que eu deveria persistir no ssrf, e talvez encontrar algum protocolo disponivel do qual eu conseguisse me aproveitar para conseguir uma shell talvez, então tentei ftp://,ssh://,dict:// e então gopher://…</p>
+<p>Ok, pensando nas possibilidades, ficou muito claro que eu deveria persistir no ssrf, e talvez encontrar algum protocolo disponível do qual eu conseguisse me aproveitar para conseguir uma shell talvez, então tentei ftp://,ssh://,dict:// e então gopher://…</p>
 
 <img src="https://i.imgur.com/tSg37dR.png">
 <p>Eu já havia estudado diversas vezes em formas de conseguir shell com o gopher, usando redis ou fastcgi em conjunto, mas nunca havia feito com mysql, encontrei alguns artigos que me indicaram que uma parte do formato do pacote do mysql, quando enviado na pilha tcp, seria o formato que o mysql entenderia caso pudessemos envia-lo por uma url, bem, é muito abstrato falar assim, vamos ver como isso funciona na prática, porém, antes, vamos criar um usuário igual ao do desafio “ssrf_user” em nosso mysql…</p>
@@ -115,17 +115,18 @@ mysql> GRANT ALL PRIVILEGES *.* TO 'ssrf_user'@'localhost';
 Query OK, 0 rows affected (0,10 sec)
 </pre>
 <br>
-<p>Ok, agora podemos prosseguir melhor. Vamos abrir o wireshark para ver como o protocolo vai se comportar quando enviarmos um pacote de conexao e login para o mysql:</p>
+<p>Ok, agora podemos prosseguir melhor.</p>
+<p>Vamos abrir o wireshark para ver como o protocolo vai se comportar quando enviarmos um pacote de conexão e login para o mysql:</p>
 <img src="https://i.imgur.com/e2pjxmm.png">
-<p>Eu cheguei a fazer o login pelo mac, porém, o que eu percebi foi que o mey mysql do mac estava gerando de uma forma totalmente diferente da original o pacote de conexão, ele estava grande demais para apenas um login, então, abri um ubuntu com mysql e um wireshark para testar isso, mas basicamente o que precisamos selecionar é o ultimo segmento apresentado do pacote pelo wireshark, que é só a parte do pacote que a gente faz a tentativa de login:</p>
+<p>Eu cheguei a fazer o login pelo mac, mas percebi que o mysql do mac estava gerando de uma forma totalmente diferente da original o pacote de conexão, ele estava grande demais para apenas um login, então, abri um ubuntu com mysql e um wireshark para testar isso, mas basicamente o que precisamos selecionar é o último segmento apresentado do pacote pelo wireshark, que é só a parte do pacote que a gente faz a tentativa de login:</p>
 <img src="https://i.imgur.com/d2lTn7s.png">
 <br>
 <p>A gente basicamente pode dividir essa comunicação do pacote do mysql e duas partes, a parte da conexão e a parte da execução dos comandos, aqui estamos apenas na parte da conexão.</p>
 <img src="https://i.imgur.com/zMvBS7c.png">
 
-<p>A partir daqui, precisamos fazer isso virar uma url, e a forma mais facil de fazer isso, é usar o input do “Show and save data as” e setar ele para “Raw”:</p>
+<p>A partir daqui, precisamos fazer isso virar uma url, e a forma mais fácil de fazer isso, é usar o input do “Show and save data as” e setar ele para “Raw”:</p>
 <img src="https://i.imgur.com/bV97KbV.png">
-<p>Ok, agora, precisamos encodar isso tudo em um formato adequado para a url, na verdade não é muito dificil, bastaria adicionar % a cada dois bytes, mas eu encontrei um script que faz isso para nós:</p>
+<p>Ok, agora, precisamos encodar isso tudo em um formato adequado para a url, na verdade não é muito difícil, bastaria adicionar % a cada dois bytes, mas eu encontrei um script que faz isso para nós:</p>
 {% highlight python %}
 def result(s):
   a = [s[i:i+2] for i in xrange(0, len(s), 2)]
