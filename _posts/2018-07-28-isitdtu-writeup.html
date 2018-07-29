@@ -91,8 +91,8 @@ function getUrlContent($url){
 initdb($conn);
 ?>
 {% endhighlight %}
-<p>É sempre interessante quando temos usuarios,senhas e etc presentes no código, vamos guardar, pois pode nos ser util futuramente.
-Analisando p initdb() você consegue ver que a função está criando um tabela chamada flag com uma coluna secret no banco de dados, caso ela ainda não exista...</p>
+<p>É sempre interessante quando temos usuarios,senhas e etc presentes no código, vamos guardar, pois pode nos ser util futuramente.</p>
+<p>Analisando p initdb() você consegue ver que a função está criando um tabela chamada flag com uma coluna secret no banco de dados, caso ela ainda não exista...</p>
 
 <br>
 <p>A função safe() está pegando a url passada e verificando via parse_url() se o host bate com localhost ou 127.0.0.1, nenhuma verificação pesada aqui...</p>
