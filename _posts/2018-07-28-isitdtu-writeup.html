@@ -96,13 +96,13 @@ initdb($conn);
 
 <br>
 <p>A função safe() está pegando a url passada e verificando via parse_url() se o host bate com localhost ou 127.0.0.1, nenhuma verificação pesada aqui...</p>
-<p>Bem, aqui no getUrlContent() eu confesso que cheguei a pensar que havia uma forma talvez nova de bypassar o escapeshellarg e conseguir injetar comandos, porém, não faria sentido algum isso, mas eu pensei nessa possibilidade…
-Olhando para a função conseguimos ver que ela está usando o escapeshellarg para criar um escape nos argumentos do comando, logo abaixo é executado um shell_exec e retornado para o usuário.
+<p>Bem, aqui no getUrlContent() eu confesso que cheguei a pensar que havia uma forma talvez nova de bypassar o escapeshellarg e conseguir injetar comandos, porém, não faria sentido algum isso, mas eu pensei nessa possibilidade…</p>
+<p>Olhando para a função conseguimos ver que ela está usando o escapeshellarg para criar um escape nos argumentos do comando, logo abaixo é executado um shell_exec e retornado para o usuário.</p>
 
-Ok, pensando nas possibilidades, ficou muito claro que eu deveria persistir no ssrf, e talvez encontrar algum protocolo disponivel do qual eu conseguisse me aproveitar para conseguir uma shell talvez, então tentei ftp://,ssh://,dict:// e então gopher://…
+<p>Ok, pensando nas possibilidades, ficou muito claro que eu deveria persistir no ssrf, e talvez encontrar algum protocolo disponivel do qual eu conseguisse me aproveitar para conseguir uma shell talvez, então tentei ftp://,ssh://,dict:// e então gopher://…</p>
 
 <img src="https://i.imgur.com/tSg37dR.png">
-Eu já havia estudado diversas vezes em formas de conseguir shell com o gopher, usando redis ou fastcgi em conjunto, mas nunca havia feito com mysql, encontrei alguns artigos que me indicaram que uma parte do formato do pacote do mysql, quando enviado na pilha tcp, seria o formato que o mysql entenderia caso pudessemos envia-lo por uma url, bem, é muito abstrato falar assim, vamos ver como isso funciona na prática, porém, antes, vamos criar um usuário igual ao do desafio “ssrf_user” em nosso mysql…</p>
+<p>Eu já havia estudado diversas vezes em formas de conseguir shell com o gopher, usando redis ou fastcgi em conjunto, mas nunca havia feito com mysql, encontrei alguns artigos que me indicaram que uma parte do formato do pacote do mysql, quando enviado na pilha tcp, seria o formato que o mysql entenderia caso pudessemos envia-lo por uma url, bem, é muito abstrato falar assim, vamos ver como isso funciona na prática, porém, antes, vamos criar um usuário igual ao do desafio “ssrf_user” em nosso mysql…</p>
 
 <pre>
 mysql> CREATE USER 'ssrf_user'@'localhost';
