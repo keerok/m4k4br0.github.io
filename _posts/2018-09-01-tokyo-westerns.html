@@ -12,14 +12,14 @@ category: writeups
 <p>A partir deste momento, temos 3 "if's", dos quais na verdade não servem para nada, porém, temos a varivel <code>$hashed_password</code> que é usada no ultimo if para verificar o seu valor e nos entregar a flag!</p>
 <p>A real intensao do desafio era explorar o <code>parse_str()</code></p>
 <p>Fazendo um pequeno teste, podemos ver que usando o <code>parse_str()</code> para pegar um valor já antes setado, fará com que este valor seja sobreescrito</p>
-<code>
+{% highlight php %}
   <?php
 
   $var = 'xxxxx';
   parse_str($_SERVER['QUERY_STRING']);
   echo $var;
   ?>
-</code>
+{% endhighlight %}
 <img src="https://i.imgur.com/GTrRI2W.png">
 <img src="https://i.imgur.com/OlVQRFH.png">
 <p>Enviando via GET o valor, é possivel notar que acontece a sobreescrita dos valores, então, precisamos apenas fazer isso no desafio.</p>
