@@ -10,7 +10,7 @@ category: writeups
 <p>Analisando por cima o código, podemos ver que ele recebe os parametros via <code>$_SERVER['QUERY_STRING']</code> e cria uma variavel <code>action</code> para separar aquilo que vem do <code>parse_str()</code> </p>
 <p>Um pouco mais para baixo, temos algumas verificações sendo feitas, enviando um get com o valor de "auth", entramos dentro da condição que precisamos para resolver o desafio.</p>
 <p>A partir deste momento, temos 3 "if's", dos quais na verdade não servem para nada, porém, temos a varivel <code>$hashed_password</code> que é usada no ultimo if para verificar o seu valor e nos entregar a flag!</p>
-<p>A real intensao do desafio era explorar o <code>parse_str()</code></p>
+<p>A real intenção do desafio era explorar o <code>parse_str()</code></p>
 <p>Fazendo um pequeno teste, podemos ver que usando o <code>parse_str()</code> para pegar um valor já antes setado, fará com que este valor seja sobreescrito</p>
 {% highlight php %}
   $var = 'xxxxx';
