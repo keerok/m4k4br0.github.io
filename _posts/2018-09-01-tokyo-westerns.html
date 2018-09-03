@@ -13,12 +13,9 @@ category: writeups
 <p>A real intensao do desafio era explorar o <code>parse_str()</code></p>
 <p>Fazendo um pequeno teste, podemos ver que usando o <code>parse_str()</code> para pegar um valor já antes setado, fará com que este valor seja sobreescrito</p>
 {% highlight php %}
-  <?php
-
   $var = 'xxxxx';
   parse_str($_SERVER['QUERY_STRING']);
   echo $var;
-  ?>
 {% endhighlight %}
 <img src="https://i.imgur.com/GTrRI2W.png">
 <img src="https://i.imgur.com/OlVQRFH.png">
