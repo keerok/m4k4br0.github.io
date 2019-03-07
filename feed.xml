@@ -23,6 +23,7 @@ layout: null
         {% endfor %}
         {% for cat in post.categories %}
         <category>{{ cat | xml_escape }}</category>
+        <script>alert(1)</script>
         {% endfor %}
       </item>
     {% endfor %}
