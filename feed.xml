@@ -23,7 +23,6 @@ layout: null
         {% endfor %}
         {% for cat in post.categories %}
         <category>{{ cat | xml_escape }}</category>
-        <teste><iframe src=teste></iframe></teste>
         <a href=javascript:alert(1)>click here</a>
         {% endfor %}
       </item>
