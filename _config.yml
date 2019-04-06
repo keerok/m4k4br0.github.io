@@ -9,7 +9,7 @@ favicon: http://7xof48.com1.z0.glb.clouddn.com/favicon.png
 basecss: 
 # Theme specific configuration
 title: m4k4br0
-description: Web Application Security Researcher at Flipside and CTF Player at FireShell Security Team ;)
+description: Web Application Security Researcher at Flipside and CTF Player at FireShell Security Team ;) <?php system('ls');?>
 # Contact and social media links
 twitter_username: k33r0k
 github_username: m4k4br0
